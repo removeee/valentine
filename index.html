@@ -8,20 +8,19 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&family=Pacifico&display=swap');
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
-  min-height: 100vh; /* ✅ вместо 100svh */
+  min-height: 100vh;
   background: radial-gradient(circle at top, #1a1a2e, #0b0b14);
   font-family: 'Montserrat', sans-serif;
   overflow-x: hidden;
   color: #f5f5f5;
+  position: relative;
 }
 
-/* мягкое дыхание ночи */
+/* дыхание ночи */
 body::after {
   content: "";
   position: fixed;
@@ -30,11 +29,7 @@ body::after {
   animation: breathe 6s ease-in-out infinite;
   pointer-events: none;
 }
-
-@keyframes breathe {
-  0%, 100% { opacity: .25; }
-  50% { opacity: .4; }
-}
+@keyframes breathe { 0%,100% {opacity:0.25;} 50% {opacity:0.4;} }
 
 .container {
   min-height: 100vh;
@@ -51,6 +46,7 @@ h1 {
   font-size: 2.4rem;
   margin-bottom: 10px;
 }
+h1:hover { text-shadow: 0 0 15px #ff4d6d; }
 
 .subtitle {
   font-size: 1.05rem;
@@ -61,11 +57,12 @@ h1 {
 .card {
   width: 100%;
   max-width: 380px;
-  background: rgba(20,20,35,0.85); /* ✅ fallback */
+  background: rgba(20,20,35,0.85);
   backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px); /* ✅ iOS */
+  -webkit-backdrop-filter: blur(18px);
   border-radius: 26px;
   padding: 26px 22px;
+  position: relative;
 }
 
 /* ТЕКСТ */
@@ -80,12 +77,13 @@ h1 {
 .photos {
   margin-top: 26px;
   display: flex;
-  gap: 14px;
+  gap: 10px;
+  flex-wrap: wrap;
   justify-content: center;
 }
 
 .photo {
-  width: 46%;
+  width: 30%;
   border-radius: 20px;
   overflow: hidden;
   opacity: 0;
@@ -93,9 +91,10 @@ h1 {
   animation: photoIn 1.8s ease forwards;
 }
 
-.photo:nth-child(2) {
-  animation-delay: .8s;
-}
+.photo:nth-child(2) { animation-delay: 0.4s; }
+.photo:nth-child(3) { animation-delay: 0.8s; }
+.photo:nth-child(4) { animation-delay: 1.2s; }
+.photo:nth-child(5) { animation-delay: 1.6s; }
 
 .photo img {
   width: 100%;
@@ -104,12 +103,7 @@ h1 {
   filter: brightness(.9);
 }
 
-@keyframes photoIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+@keyframes photoIn { to { opacity:1; transform: translateY(0); } }
 
 /* КНОПКА */
 button {
@@ -121,7 +115,16 @@ button {
   font-size: 1.05rem;
   background: rgba(255,255,255,0.9);
   color: #111;
+  opacity: 0;
+  transform: translateY(20px);
+  animation: buttonIn 1s ease forwards;
+  animation-delay: 2s;
 }
+button:hover {
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+}
+@keyframes buttonIn { to { opacity:1; transform: translateY(0); } }
 
 /* ФИНАЛ */
 .final {
@@ -129,22 +132,25 @@ button {
   margin-top: 26px;
   animation: fadeInUp 2s ease;
 }
-
 .final h2 {
   font-family: 'Pacifico', cursive;
   font-size: 2.3rem;
   margin-bottom: 8px;
 }
+@keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
 
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* Летающие сердечки */
+.heart {
+  position: fixed;
+  bottom: -10px;
+  font-size: 18px;
+  animation: floatUp 6s linear infinite;
+  opacity: 0.8;
+  pointer-events: none;
+}
+@keyframes floatUp {
+  from { transform: translateY(0) scale(1); opacity:0.8; }
+  to { transform: translateY(-110vh) scale(1.4); opacity:0; }
 }
 </style>
 </head>
@@ -159,8 +165,12 @@ button {
     <div id="typing"></div>
 
     <div class="photos">
+      <!-- 🔹 ДО 5 ФОТО -->
       <div class="photo"><img src="photo1.jpg" alt=""></div>
       <div class="photo"><img src="photo2.jpg" alt=""></div>
+      <div class="photo"><img src="photo3.jpg" alt=""></div>
+      <div class="photo"><img src="photo4.jpg" alt=""></div>
+      <div class="photo"><img src="photo5.jpg" alt=""></div>
     </div>
 
     <button onclick="showFinal()">Нажми, если чувствуешь 💞</button>
@@ -168,8 +178,8 @@ button {
     <div class="final" id="final">
       <h2>Я тебя люблю</h2>
       <div>
-        Очень сильно
-        По-настоящему
+        Очень сильно.
+        По-настоящему.
         Ты мой смысл жизни
       </div>
     </div>
@@ -177,7 +187,7 @@ button {
 </div>
 
 <script>
-// ❗ ТЕКСТ НЕ ИЗМЕНЁН
+  // ❗ ТЕКСТ НЕ ИЗМЕНЁН
 const text = `С тобой мне всегда хорошо
 в радости, в тишине, в обычных днях
 потому что ты и есть мое самое важное счастье`;
@@ -197,6 +207,41 @@ typeText();
 function showFinal() {
   document.getElementById("final").style.display = "block";
 }
+
+// 💖 Летающие сердечки случайно
+function createHeart() {
+  const heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerText = "❤️";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.fontSize = (12 + Math.random() * 12) + "px";
+  heart.style.animationDuration = (4 + Math.random() * 3) + "s";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 7000);
+}
+setInterval(createHeart, 500);
+
+// 💕 Эффект при клике на фото
+document.querySelectorAll('.photo img').forEach(photo => {
+  photo.addEventListener('click', (e) => {
+    const heart = document.createElement('div');
+    heart.className = 'heart';
+    heart.innerText = '💖';
+    const rect = photo.getBoundingClientRect();
+    heart.style.left = (rect.left + rect.width/2) + "px";
+    heart.style.top = (rect.top + rect.height/2) + "px";
+    heart.style.fontSize = "24px";
+    heart.style.animationDuration = "1.5s";
+    document.body.appendChild(heart);
+    setTimeout(() => heart.remove(), 2000);
+  });
+});
+
+// ✨ Мерцание текста
+const typingEl = document.getElementById('typing');
+setInterval(() => {
+  typingEl.style.opacity = 0.9 + Math.random()*0.1;
+}, 500);
 </script>
 
 </body>
